@@ -1,92 +1,48 @@
 #!/usr/bin/python3
 """
-Log parsing script that reads stdin line by line and computes metrics.
-
-Input format: <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
-Prints statistics every 10 lines and on keyboard interruption (CTRL + C).
+Task - Script that reads stdin line by line and computes metrics
 """
+
 import sys
-import re
-
-
-def print_stats(total_size, status_counts):
-    """
-    Print the current statistics.
-    
-    Args:
-        total_size (int): Total file size accumulated
-        status_counts (dict): Dictionary of status code counts
-    """
-    print("File size: {}".format(total_size))
-    
-    # Print status codes in ascending order
-    valid_status_codes = [200, 301, 400, 401, 403, 404, 405, 500]
-    for status_code in valid_status_codes:
-        if status_code in status_counts and status_counts[status_code] > 0:
-            print("{}: {}".format(status_code, status_counts[status_code]))
-
-
-def parse_log_line(line):
-    """
-    Parse a log line and extract status code and file size.
-    
-    Args:
-        line (str): Log line to parse
-        
-    Returns:
-        tuple: (status_code, file_size) or (None, None) if invalid format
-    """
-    # Expected format: <IP> - [<date>] "GET /projects/260 HTTP/1.1" <status> <size>
-    # Use regex to match the exact format
-    pattern = r'^(\S+) - \[([^\]]+)\] "GET /projects/260 HTTP/1\.1" (\d+) (\d+)$'
-    match = re.match(pattern, line.strip())
-    
-    if match:
-        try:
-            status_code = int(match.group(3))
-            file_size = int(match.group(4))
-            return status_code, file_size
-        except ValueError:
-            return None, None
-    
-    return None, None
-
-
-def main():
-    """
-    Main function to process log lines from stdin.
-    """
-    total_size = 0
-    status_counts = {}
-    line_count = 0
-    
-    try:
-        for line in sys.stdin:
-            status_code, file_size = parse_log_line(line)
-            
-            # Skip invalid lines
-            if status_code is None or file_size is None:
-                continue
-            
-            # Update totals
-            total_size += file_size
-            line_count += 1
-            
-            # Update status code count
-            if status_code in status_counts:
-                status_counts[status_code] += 1
-            else:
-                status_counts[status_code] = 1
-            
-            # Print stats every 10 lines
-            if line_count % 10 == 0:
-                print_stats(total_size, status_counts)
-    
-    except KeyboardInterrupt:
-        # Print final stats on keyboard interruption
-        print_stats(total_size, status_counts)
-        raise
 
 
 if __name__ == "__main__":
-    main()
+    st_code = {"200": 0,
+               "301": 0,
+               "400": 0,
+               "401": 0,
+               "403": 0,
+               "404": 0,
+               "405": 0,
+               "500": 0}
+    count = 1
+    file_size = 0
+
+    def parse_line(line):
+        """ Read, parse and grab data"""
+        try:
+            parsed_line = line.split()
+            status_code = parsed_line[-2]
+            if status_code in st_code.keys():
+                st_code[status_code] += 1
+            return int(parsed_line[-1])
+        except Exception:
+            return 0
+
+    def print_stats():
+        """print stats in ascending order"""
+        print("File size: {}".format(file_size))
+        for key in sorted(st_code.keys()):
+            if st_code[key]:
+                print("{}: {}".format(key, st_code[key]))
+
+    try:
+        for line in sys.stdin:
+            file_size += parse_line(line)
+            if count % 10 == 0:
+                print_stats()
+            count += 1
+    except KeyboardInterrupt:
+        print_stats()
+        raise
+    print_stats()
