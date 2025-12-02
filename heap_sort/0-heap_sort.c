@@ -94,7 +94,7 @@ void heap_sort(int *array, size_t size)
 	{
 		/* Move current root to end */
 		swap(array, 0, end, size);
-		
+
 		/* Reduce heap size and sift down the new root */
 		end--;
 		sift_down(array, 0, end, size);
