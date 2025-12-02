@@ -10,10 +10,11 @@ int _putchar(char c);
  */
 void error_exit(void)
 {
-    char *error = "Error\n";
-    while (*error)
-        _putchar(*error++);
-    exit(98);
+	char *error = "Error\n";
+
+	while (*error)
+		_putchar(*error++);
+	exit(98);
 }
 
 /**
@@ -23,13 +24,13 @@ void error_exit(void)
  */
 int is_digit_string(char *str)
 {
-    while (*str)
-    {
-        if (*str < '0' || *str > '9')
-            return (0);
-        str++;
-    }
-    return (1);
+	while (*str)
+	{
+		if (*str < '0' || *str > '9')
+			return (0);
+		str++;
+	}
+	return (1);
 }
 
 /**
@@ -42,30 +43,30 @@ int is_digit_string(char *str)
  */
 int *multiply_digits(char *num1, char *num2, size_t len1, size_t len2)
 {
-    int *result;
-    size_t i, j;
-    int carry, product;
+	int *result;
+	size_t i, j;
+	int carry, product;
 
-    /* Allocate result array (max digits = len1 + len2) */
-    result = calloc(len1 + len2, sizeof(int));
-    if (!result)
-        return (NULL);
+	/* Allocate result array (max digits = len1 + len2) */
+	result = calloc(len1 + len2, sizeof(int));
+	if (!result)
+		return (NULL);
 
-    /* Multiply digits */
-    for (i = 0; i < len1; i++)
-    {
-        carry = 0;
-        for (j = 0; j < len2; j++)
-        {
-            product = (num1[len1 - 1 - i] - '0') * (num2[len2 - 1 - j] - '0') +
-                      result[i + j] + carry;
-            result[i + j] = product % 10;
-            carry = product / 10;
-        }
-        result[i + j] = carry;
-    }
+	/* Multiply digits */
+	for (i = 0; i < len1; i++)
+	{
+		carry = 0;
+		for (j = 0; j < len2; j++)
+		{
+			product = (num1[len1 - 1 - i] - '0') * (num2[len2 - 1 - j] - '0') +
+				result[i + j] + carry;
+			result[i + j] = product % 10;
+			carry = product / 10;
+		}
+		result[i + j] = carry;
+	}
 
-    return (result);
+	return (result);
 }
 
 /**
@@ -75,22 +76,22 @@ int *multiply_digits(char *num1, char *num2, size_t len1, size_t len2)
  */
 void print_result(int *result, size_t len)
 {
-    size_t i = len;
-    int started = 0;
+	size_t i = len;
+	int started = 0;
 
-    /* Find first non-zero digit */
-    while (i > 0)
-    {
-        i--;
-        if (result[i] != 0)
-            started = 1;
-        if (started)
-            _putchar(result[i] + '0');
-    }
-    /* If result is 0, print a single 0 */
-    if (!started)
-        _putchar('0');
-    _putchar('\n');
+	/* Find first non-zero digit */
+	while (i > 0)
+	{
+		i--;
+		if (result[i] != 0)
+			started = 1;
+		if (started)
+			_putchar(result[i] + '0');
+	}
+	/* If result is 0, print a single 0 */
+	if (!started)
+		_putchar('0');
+	_putchar('\n');
 }
 
 /**
@@ -101,42 +102,43 @@ void print_result(int *result, size_t len)
  */
 int main(int argc, char *argv[])
 {
-    char *num1, *num2;
-    size_t len1, len2;
-    int *result;
+	char *num1, *num2;
+	size_t len1, len2;
+	int *result;
 
-    /* Check for correct number of arguments */
-    if (argc != 3)
-        error_exit();
+	/* Check for correct number of arguments */
+	if (argc != 3)
+		error_exit();
 
-    num1 = argv[1];
-    num2 = argv[2];
+	num1 = argv[1];
+	num2 = argv[2];
 
-    /* Validate inputs are digit strings */
-    if (!is_digit_string(num1) || !is_digit_string(num2))
-        error_exit();
+	/* Validate inputs are digit strings */
+	if (!is_digit_string(num1) || !is_digit_string(num2))
+		error_exit();
 
-    len1 = strlen(num1);
-    len2 = strlen(num2);
+	len1 = strlen(num1);
+	len2 = strlen(num2);
 
-    /* Handle case where either number is "0" */
-    if ((len1 == 1 && num1[0] == '0') || (len2 == 1 && num2[0] == '0'))
-    {
-        _putchar('0');
-        _putchar('\n');
-        return (0);
-    }
+	/* Handle case where either number is "0" */
+	if ((len1 == 1 && num1[0] == '0') || (len2 == 1 && num2[0] == '0'))
+	{
+		_putchar('0');
+		_putchar('\n');
+		return (0);
+	}
 
-    /* Perform multiplication */
-    result = multiply_digits(num1, num2, len1, len2);
-    if (!result)
-        error_exit();
+	/* Perform multiplication */
+	result = multiply_digits(num1, num2, len1, len2);
+	if (!result)
+		error_exit();
 
-    /* Print result */
-    print_result(result, len1 + len2);
+	/* Print result */
+	print_result(result, len1 + len2);
 
-    /* Free allocated memory */
-    free(result);
+	/* Free allocated memory */
+	free(result);
 
-    return (0);
+	return (0);
 }
+
