@@ -3,8 +3,8 @@
 Recursive function that queries the Reddit API and counts keywords
 in hot article titles.
 """
-import requests
 import re
+import requests
 
 
 def count_words(subreddit, word_list, after=None, word_count=None):
